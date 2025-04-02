@@ -1,5 +1,6 @@
 package com.tablemaster_api.entity;
 
+import com.tablemaster_api.DaysOfWeek;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
@@ -35,6 +36,9 @@ public class Restaurant {
     @Column(name = "work_time_closed")
     private Timestamp workTimeClosed;
 
-    @JoinTable(joinColumns = "day")
-    private List<String> workDays;
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<DaysOfWeek> workDays;
+
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Tag> tags;
 }
