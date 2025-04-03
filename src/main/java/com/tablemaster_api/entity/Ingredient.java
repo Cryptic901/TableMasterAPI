@@ -12,10 +12,12 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
-    private Integer quantity;
+    private Integer quantity = 0;
 
+    @Column(nullable = false)
     private String unit;
 
     public Ingredient() {

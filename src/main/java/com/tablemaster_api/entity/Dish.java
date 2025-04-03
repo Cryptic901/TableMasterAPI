@@ -1,5 +1,8 @@
 package com.tablemaster_api.entity;
 
+import
+        jakarta.persistence.*;
+
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -15,15 +18,18 @@ public class Dish {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     @JoinColumn(name = "restaurant_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Restaurant restaurant;
 
+    @Column(nullable = false)
     private BigDecimal price;
 
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @Column(nullable = false)
     private List<Ingredient> ingredients = new ArrayList<>();
 
     public Dish(Long id, String name, Restaurant restaurant, BigDecimal price) {

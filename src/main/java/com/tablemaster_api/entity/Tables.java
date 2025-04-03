@@ -2,6 +2,7 @@ package com.tablemaster_api.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +14,7 @@ public class Tables {
     private Long id;
 
     @Column(name = "reservation_time")
-    private String reservationTimeStart;
+    private LocalDateTime reservationTime;
 
     private Integer capacity;
 
@@ -21,11 +22,14 @@ public class Tables {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    public Tables(Long id, String reservationTimeStart, Integer capacity, Restaurant restaurant) {
+    private boolean reserved = false;
+
+    public Tables(Long id, LocalDateTime reservationTime, Integer capacity, Restaurant restaurant, boolean reserved) {
         this.id = id;
-        this.reservationTimeStart = reservationTimeStart;
+        this.reservationTime = reservationTime;
         this.capacity = capacity;
         this.restaurant = restaurant;
+        this.reserved = reserved;
     }
 
     public Tables() {
@@ -37,14 +41,6 @@ public class Tables {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getReservationTimeStart() {
-        return reservationTimeStart;
-    }
-
-    public void setReservationTimeStart(String reservationTimeStart) {
-        this.reservationTimeStart = reservationTimeStart;
     }
 
     public Integer getCapacity() {
@@ -63,28 +59,46 @@ public class Tables {
         this.restaurant = restaurant;
     }
 
+    public LocalDateTime getReservationTime() {
+        return reservationTime;
+    }
+
+    public void setReservationTime(LocalDateTime reservationTime) {
+        this.reservationTime = reservationTime;
+    }
+
+    public boolean isReserved() {
+        return reserved;
+    }
+
+    public void setReserved(boolean reserved) {
+        this.reserved = reserved;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Tables tables = (Tables) o;
         return Objects.equals(id, tables.id) &&
-                Objects.equals(reservationTimeStart, tables.reservationTimeStart) &&
+                Objects.equals(reservationTime, tables.reservationTime) &&
                 Objects.equals(capacity, tables.capacity) &&
-                Objects.equals(restaurant, tables.restaurant);
+                Objects.equals(restaurant, tables.restaurant) &&
+                Objects.equals(reserved, tables.reserved);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, reservationTimeStart, capacity, restaurant);
+        return Objects.hash(id, reservationTime, capacity, restaurant, reserved);
     }
 
     @Override
     public String toString() {
         return "Tables{" +
                 "id=" + id +
-                ", reservationTimeStart='" + reservationTimeStart + '\'' +
+                ", reservationTime='" + reservationTime + '\'' +
                 ", capacity=" + capacity +
                 ", restaurant=" + restaurant +
+                ", reserved=" + reserved +
                 '}';
     }
 }

@@ -16,30 +16,32 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private String description;
-
+    @Column(nullable = false)
     private String address;
-
+    @Column(nullable = false)
     private String phone;
 
     private String email;
-
+    @Column(nullable = false)
     private String location;
 
     private Double rating;
 
     @Column(name = "count_of_reviews")
-    private Integer countOfReviews;
+    private Integer countOfReviews = 0;
 
-    @Column(name = "work_time_open")
+    @Column(name = "work_time_open", nullable = false)
     private LocalDateTime workTimeOpen;
 
-    @Column(name = "work_time_closed")
+    @Column(name = "work_time_closed", nullable = false)
     private LocalDateTime workTimeClosed;
 
     @ElementCollection(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private List<DaysOfWeek> workDays = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
