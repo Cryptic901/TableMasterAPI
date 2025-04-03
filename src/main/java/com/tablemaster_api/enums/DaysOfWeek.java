@@ -1,4 +1,4 @@
-package com.tablemaster_api;
+package com.tablemaster_api.enums;
 
 public enum DaysOfWeek {
     MONDAY,

@@ -2,6 +2,9 @@ package com.tablemaster_api.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,9 +21,12 @@ public class Dish {
     @ManyToOne(fetch = FetchType.LAZY)
     private Restaurant restaurant;
 
-    private Double price;
+    private BigDecimal price;
 
-    public Dish(Long id, String name, Restaurant restaurant, Double price) {
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Ingredient> ingredients = new ArrayList<>();
+
+    public Dish(Long id, String name, Restaurant restaurant, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.restaurant = restaurant;
@@ -54,12 +60,28 @@ public class Dish {
         this.restaurant = restaurant;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public Dish(Long id, String name, Restaurant restaurant, BigDecimal price, List<Ingredient> ingredients) {
+        this.id = id;
+        this.name = name;
+        this.restaurant = restaurant;
+        this.price = price;
+        this.ingredients = ingredients;
     }
 
     @Override
@@ -69,21 +91,22 @@ public class Dish {
         return Objects.equals(id, dish.id) &&
                 Objects.equals(name, dish.name) &&
                 Objects.equals(restaurant, dish.restaurant) &&
-                Objects.equals(price, dish.price);
+                Objects.equals(price, dish.price) &&
+                Objects.equals(ingredients, dish.ingredients);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, restaurant, price);
+        return Objects.hash(id, name, restaurant, price, ingredients);
     }
 
     @Override
     public String toString() {
         return "Dish{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "price=" + price +
                 ", restaurant=" + restaurant +
-                ", price=" + price +
+                ", name='" + name + '\'' +
+                ", id=" + id +
                 '}';
     }
 }
