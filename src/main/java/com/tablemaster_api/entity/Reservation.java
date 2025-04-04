@@ -2,6 +2,7 @@ package com.tablemaster_api.entity;
 
 import jakarta.persistence.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -25,7 +26,11 @@ public class Reservation {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    private LocalDateTime reservationTime;
+    @Column(name = "reservation_time_start")
+    private LocalDateTime reservationTimeStart;
+
+    @Column(name = "reservation_time_end")
+    private LocalDateTime reservationTimeEnd;
 
     public Long getId() {
         return id;
@@ -59,39 +64,45 @@ public class Reservation {
         this.restaurant = restaurant;
     }
 
-    public LocalDateTime getReservationTime() {
-        return reservationTime;
+    public LocalDateTime getReservationTimeStart() {
+        return reservationTimeStart;
     }
 
-    public void setReservationTime(LocalDateTime reservationTime) {
-        this.reservationTime = reservationTime;
+    public void setReservationTimeStart(LocalDateTime reservationTimeStart) {
+        this.reservationTimeStart = reservationTimeStart;
+    }
+
+    public LocalDateTime getReservationTimeEnd() {
+        return reservationTimeEnd;
+    }
+
+    public void setReservationTimeEnd(LocalDateTime reservationTimeEnd) {
+        this.reservationTimeEnd = reservationTimeEnd;
     }
 
     public Reservation() {
     }
 
-    public Reservation(Long id, User user, Tables tables, Restaurant restaurant, LocalDateTime reservationTime) {
+    public Reservation(Long id, User user, Tables tables, Restaurant restaurant, LocalDateTime reservationTimeStart, LocalDateTime reservationTimeEnd) {
         this.id = id;
         this.user = user;
         this.tables = tables;
         this.restaurant = restaurant;
-        this.reservationTime = reservationTime;
+        this.reservationTimeStart = reservationTimeStart;
+        this.reservationTimeEnd = reservationTimeEnd;
     }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reservation that = (Reservation) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(user, that.user) &&
-                Objects.equals(tables, that.tables) &&
-                Objects.equals(restaurant, that.restaurant) &&
-                Objects.equals(reservationTime, that.reservationTime);
+        return Objects.equals(id, that.id) && Objects.equals(user, that.user) && Objects.equals(tables, that.tables) && Objects.equals(restaurant, that.restaurant) && Objects.equals(reservationTimeStart, that.reservationTimeStart) && Objects.equals(reservationTimeEnd, that.reservationTimeEnd);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, tables, restaurant, reservationTime);
+        return Objects.hash(id, user, tables, restaurant, reservationTimeStart, reservationTimeEnd);
     }
 
     @Override
@@ -101,7 +112,8 @@ public class Reservation {
                 ", user=" + user +
                 ", tables=" + tables +
                 ", restaurant=" + restaurant +
-                ", reservationTime=" + reservationTime +
+                ", reservationTimeStart=" + reservationTimeStart +
+                ", reservationTimeEnd=" + reservationTimeEnd +
                 '}';
     }
 }

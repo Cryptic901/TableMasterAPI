@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TablesRepository extends JpaRepository<Table, Long> {
+public interface TablesRepository extends JpaRepository<Tables, Long> {
 }

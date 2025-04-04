@@ -13,8 +13,11 @@ public class Tables {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "reservation_time")
-    private LocalDateTime reservationTime;
+    @Column(name = "reservation_time_start")
+    private LocalDateTime reservationTimeStart;
+
+    @Column(name = "reservation_time_end")
+    private LocalDateTime reservationTimeEnd;
 
     private Integer capacity;
 
@@ -22,14 +25,13 @@ public class Tables {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    private boolean reserved = false;
-
-    public Tables(Long id, LocalDateTime reservationTime, Integer capacity, Restaurant restaurant, boolean reserved) {
+    public Tables(Long id, LocalDateTime reservationTimeStart,
+                  LocalDateTime reservationTimeEnd, Integer capacity, Restaurant restaurant) {
         this.id = id;
-        this.reservationTime = reservationTime;
+        this.reservationTimeStart = reservationTimeStart;
+        this.reservationTimeEnd = reservationTimeEnd;
         this.capacity = capacity;
         this.restaurant = restaurant;
-        this.reserved = reserved;
     }
 
     public Tables() {
@@ -41,6 +43,22 @@ public class Tables {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDateTime getReservationTimeStart() {
+        return reservationTimeStart;
+    }
+
+    public void setReservationTimeStart(LocalDateTime reservationTimeStart) {
+        this.reservationTimeStart = reservationTimeStart;
+    }
+
+    public LocalDateTime getReservationTimeEnd() {
+        return reservationTimeEnd;
+    }
+
+    public void setReservationTimeEnd(LocalDateTime reservationTimeEnd) {
+        this.reservationTimeEnd = reservationTimeEnd;
     }
 
     public Integer getCapacity() {
@@ -59,46 +77,27 @@ public class Tables {
         this.restaurant = restaurant;
     }
 
-    public LocalDateTime getReservationTime() {
-        return reservationTime;
-    }
-
-    public void setReservationTime(LocalDateTime reservationTime) {
-        this.reservationTime = reservationTime;
-    }
-
-    public boolean isReserved() {
-        return reserved;
-    }
-
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
-    }
-
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tables tables = (Tables) o;
-        return Objects.equals(id, tables.id) &&
-                Objects.equals(reservationTime, tables.reservationTime) &&
-                Objects.equals(capacity, tables.capacity) &&
-                Objects.equals(restaurant, tables.restaurant) &&
-                Objects.equals(reserved, tables.reserved);
+        return Objects.equals(id, tables.id) && Objects.equals(reservationTimeStart, tables.reservationTimeStart) && Objects.equals(reservationTimeEnd, tables.reservationTimeEnd) && Objects.equals(capacity, tables.capacity) && Objects.equals(restaurant, tables.restaurant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, reservationTime, capacity, restaurant, reserved);
+        return Objects.hash(id, reservationTimeStart, reservationTimeEnd, capacity, restaurant);
     }
 
     @Override
     public String toString() {
         return "Tables{" +
                 "id=" + id +
-                ", reservationTime='" + reservationTime + '\'' +
+                ", reservationTimeStart=" + reservationTimeStart +
+                ", reservationTimeEnd=" + reservationTimeEnd +
                 ", capacity=" + capacity +
                 ", restaurant=" + restaurant +
-                ", reserved=" + reserved +
                 '}';
     }
 }
