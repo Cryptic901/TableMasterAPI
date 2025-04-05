@@ -3,6 +3,17 @@ server:
 spring:
   application:
     name: TableMaster API
+  mail:
+    port: 587
+    host: smtp.gmail.com
+    username: luckyartem901@gmail.com
+    password: svmo utjz ekaf wqrq
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   security:
     jwt:
       secret-key: ${JWT_SECRET}
