@@ -31,13 +31,9 @@ public class DishService implements IDishService {
                 .orElseThrow(() -> new EntityNotFoundException("Dish not found")));
     }
 
-    public String addDish(Dish dish) {
-        try {
-            dishRepository.save(dish);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        return "Dish created successfully!";
+    public DishDto addDish(Dish dish) {
+        dishRepository.save(dish);
+        return dishDtoMapper.fromEntity(dish);
     }
 
     public String deleteDish(long dishId) {

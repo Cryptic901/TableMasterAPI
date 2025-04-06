@@ -17,6 +17,6 @@ public record RestaurantDto(
         LocalDateTime workTimeOpen,
         LocalDateTime workTimeClosed,
         List<DaysOfWeek> workDays,
-        List<Tag> tags,
+        Set<Tag> tags,
         List<Reservation> reservations
 ) {}

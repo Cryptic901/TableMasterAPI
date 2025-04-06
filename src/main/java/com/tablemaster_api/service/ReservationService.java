@@ -4,8 +4,10 @@ import com.tablemaster_api.abstraction.repository.ReservationRepository;
 import com.tablemaster_api.abstraction.repository.RestaurantRepository;
 import com.tablemaster_api.abstraction.repository.TablesRepository;
 import com.tablemaster_api.abstraction.repository.UserRepository;
+import com.tablemaster_api.abstraction.service.IReservationService;
 import com.tablemaster_api.dto.ContactInfoDto;
 import com.tablemaster_api.dto.RestaurantDto;
+import com.tablemaster_api.dto.TimeIntervalDto;
 import com.tablemaster_api.entity.Reservation;
 import com.tablemaster_api.entity.Restaurant;
 import com.tablemaster_api.entity.Tables;
@@ -18,12 +20,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
-public class ReservationService {
+public class ReservationService implements IReservationService {
 
     private final ReservationRepository reservationRepository;
     private final TablesRepository tablesRepository;
@@ -41,8 +42,8 @@ public class ReservationService {
         this.restaurantDtoMapper = restaurantDtoMapper;
     }
 
-    public List<Tables> getFreeTables(long restaurantId, LocalDateTime targetTimeStart, LocalDateTime targetTimeEnd) {
-        return reservationRepository.getFreeTables(restaurantId, targetTimeStart, targetTimeEnd);
+    public List<Tables> getFreeTables(long restaurantId, TimeIntervalDto timeIntervalDto) {
+        return reservationRepository.getFreeTables(restaurantId, timeIntervalDto.timeStart(), timeIntervalDto.timeEnd());
     }
 
 
@@ -137,8 +138,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public String reserveTable(long restaurantId, long tableId, LocalDateTime suggestedTimeStart,
-                               LocalDateTime suggestedTimeEnd) {
+    public String reserveTable(long restaurantId, long tableId, TimeIntervalDto timeIntervalDto) {
 
         Tables table = tablesRepository.findById(tableId)
                 .orElseThrow(() -> new EntityNotFoundException("Table not found"));
@@ -150,24 +150,24 @@ public class ReservationService {
         User user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        if (!getFreeTables(restaurantId, suggestedTimeStart, suggestedTimeEnd).contains(table)) {
+        if (!getFreeTables(restaurantId, timeIntervalDto).contains(table)) {
             return "This table is reserved at this time.";
         }
         Reservation reservation = new Reservation();
         reservation.setTables(table);
         reservation.setRestaurant(restaurant);
         reservation.setUser(user);
-        reservation.setReservationTimeStart(suggestedTimeStart);
-        reservation.setReservationTimeEnd(suggestedTimeEnd);
+        reservation.setReservationTimeStart(timeIntervalDto.timeStart());
+        reservation.setReservationTimeEnd(timeIntervalDto.timeEnd());
         ContactInfoDto contacts = new ContactInfoDto(restaurant.getPhone(), restaurant.getEmail());
         sendReservingMessageToEmail(user, restaurantDtoMapper.fromEntity(restaurant), contacts, reservation, table);
         reservationRepository.save(reservation);
 
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String reservedTime = suggestedTimeStart.format(timeFormatter) + "-"
-                + suggestedTimeEnd.format(timeFormatter);
-        String reservedDay = suggestedTimeStart.format(dateFormatter);
+        String reservedTime = timeIntervalDto.timeStart().format(timeFormatter) + "-"
+                + timeIntervalDto.timeEnd().format(timeFormatter);
+        String reservedDay = timeIntervalDto.timeStart().format(dateFormatter);
 
         return "Table reserved successfully on time: " + reservedTime + ",\n On date: " + reservedDay;
     }

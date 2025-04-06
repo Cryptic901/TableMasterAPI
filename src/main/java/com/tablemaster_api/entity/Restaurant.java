@@ -4,9 +4,7 @@ import com.tablemaster_api.enums.DaysOfWeek;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "restaurant")
@@ -44,12 +42,28 @@ public class Restaurant {
     @Column(nullable = false)
     private List<DaysOfWeek> workDays = new ArrayList<>();
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Tag> tags = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "restaurant_tags",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RestaurantReview> reviews = new ArrayList<>();
+
+
+    public List<RestaurantReview> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<RestaurantReview> reviews) {
+        this.reviews = reviews;
+    }
 
     public Long getId() {
         return id;
@@ -147,11 +161,11 @@ public class Restaurant {
         this.workDays = workDays;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
@@ -166,10 +180,10 @@ public class Restaurant {
     public Restaurant() {
     }
 
-    public Restaurant(Long id, String name, String description, String address,
-                      String phone, String email, String location, Double rating,
-                      Integer countOfReviews, LocalDateTime workTimeOpen, LocalDateTime workTimeClosed,
-                      List<DaysOfWeek> workDays, List<Tag> tags, List<Reservation> reservations) {
+    public Restaurant(Long id, String name, String description, String address, String phone,
+                      String email, String location, Double rating, Integer countOfReviews,
+                      LocalDateTime workTimeOpen, LocalDateTime workTimeClosed, List<DaysOfWeek> workDays,
+                      Set<Tag> tags, List<Reservation> reservations, List<RestaurantReview> reviews) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -184,10 +198,12 @@ public class Restaurant {
         this.workDays = workDays;
         this.tags = tags;
         this.reservations = reservations;
+        this.reviews = reviews;
     }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Restaurant that = (Restaurant) o;
         return Objects.equals(id, that.id) &&
@@ -203,13 +219,15 @@ public class Restaurant {
                 Objects.equals(workTimeClosed, that.workTimeClosed) &&
                 Objects.equals(workDays, that.workDays) &&
                 Objects.equals(tags, that.tags) &&
-                Objects.equals(reservations, that.reservations);
+                Objects.equals(reservations, that.reservations) &&
+                Objects.equals(reviews, that.reviews);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, name, description, address, phone, email, location,
-                rating, countOfReviews, workTimeOpen, workTimeClosed, workDays, tags, reservations);
+                rating, countOfReviews, workTimeOpen, workTimeClosed, workDays, tags,
+                reservations, reviews);
     }
 
     @Override

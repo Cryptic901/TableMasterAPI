@@ -7,9 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public record RestaurantReviewDto(
-    Long id,
     Restaurant restaurant,
     User user,
     BigDecimal rating,
-    String content,
     LocalDateTime createdAt) {}

@@ -1,17 +1,23 @@
 package com.tablemaster_api.service;
 
 import com.tablemaster_api.abstraction.repository.RestaurantRepository;
+import com.tablemaster_api.abstraction.repository.RestaurantReviewRepository;
 import com.tablemaster_api.abstraction.service.IRestaurantService;
 import com.tablemaster_api.dto.ContactInfoDto;
 import com.tablemaster_api.dto.RestaurantDto;
 import com.tablemaster_api.dto.RestaurantShortDto;
 import com.tablemaster_api.entity.Restaurant;
+import com.tablemaster_api.entity.Tag;
 import com.tablemaster_api.mapper.RestaurantDtoMapper;
+import com.tablemaster_api.mapper.RestaurantReviewDtoMapper;
 import com.tablemaster_api.mapper.RestaurantShortDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RestaurantService implements IRestaurantService {
@@ -20,7 +26,8 @@ public class RestaurantService implements IRestaurantService {
     private final RestaurantDtoMapper restaurantDtoMapper;
     private final RestaurantShortDtoMapper restaurantShortDtoMapper;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantDtoMapper restaurantDtoMapper, RestaurantShortDtoMapper restaurantShortDtoMapper) {
+    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantDtoMapper restaurantDtoMapper,
+                             RestaurantShortDtoMapper restaurantShortDtoMapper) {
         this.restaurantRepository = restaurantRepository;
         this.restaurantDtoMapper = restaurantDtoMapper;
         this.restaurantShortDtoMapper = restaurantShortDtoMapper;
@@ -42,13 +49,9 @@ public class RestaurantService implements IRestaurantService {
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found")));
     }
 
-    public String createRestaurant(Restaurant restaurant) {
-        try {
-            restaurantRepository.save(restaurant);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        return "Dish created successfully!";
+    public RestaurantDto addRestaurant(Restaurant restaurant) {
+        restaurantRepository.save(restaurant);
+        return restaurantDtoMapper.fromEntity(restaurant);
     }
 
     public String deleteRestaurant(long restaurantId) {
@@ -64,5 +67,12 @@ public class RestaurantService implements IRestaurantService {
         restaurantDtoMapper.updateEntityFromDto(restaurantDto, restaurant);
         restaurantRepository.save(restaurant);
         return restaurantDtoMapper.fromEntity(restaurant);
+    }
+
+    public List<RestaurantShortDto> getAllSorted(Sort sort) {
+        List<Restaurant> restaurants = restaurantRepository.findAll(sort);
+        return restaurants.stream()
+                .map(restaurantShortDtoMapper::fromEntity)
+                .toList();
     }
 }

@@ -29,13 +29,9 @@ public class IngredientService implements IIngredientService {
         return ingredientDtoMapper.fromEntity(ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found")));
     }
-    public String addIngredient(Ingredient ingredient) {
-        try {
+    public IngredientDto addIngredient(Ingredient ingredient) {
             ingredientRepository.save(ingredient);
-        } catch (Exception e) {
-            return e.getMessage();
-        }
-        return "Ingredient created successfully!";
+            return ingredientDtoMapper.fromEntity(ingredient);
     }
 
     public String deleteIngredient(long ingredientId) {
