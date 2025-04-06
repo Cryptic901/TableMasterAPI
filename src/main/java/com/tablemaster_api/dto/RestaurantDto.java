@@ -5,7 +5,9 @@ import com.tablemaster_api.entity.Tag;
 import com.tablemaster_api.enums.DaysOfWeek;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public record RestaurantDto(
         String name,
@@ -17,6 +19,6 @@ public record RestaurantDto(
         LocalDateTime workTimeOpen,
         LocalDateTime workTimeClosed,
         List<DaysOfWeek> workDays,
-        List<Tag> tags,
+        Set<Tag> tags,
         List<Reservation> reservations
 ) {}

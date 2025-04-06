@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: TableMaster API
+  elasticsearch:
+    uris: http://localhost:9200
   mail:
     port: 587
     host: smtp.gmail.com

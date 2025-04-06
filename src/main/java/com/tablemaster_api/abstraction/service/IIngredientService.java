@@ -12,7 +12,7 @@ public interface IIngredientService {
 
     IngredientDto getIngredientById(long ingredientId);
 
-    String addIngredient(Ingredient ingredient);
+    IngredientDto addIngredient(Ingredient ingredient);
 
     String deleteIngredient(long ingredientId);
 

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "restaurant_reviews")
-public class RestaurantReview {
+public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,10 +77,10 @@ public class RestaurantReview {
         this.createdAt = createdAt;
     }
 
-    public RestaurantReview() {
+    public Review() {
     }
 
-    public RestaurantReview(Long id, Restaurant restaurant, User user,
+    public Review(Long id, Restaurant restaurant, User user,
                             BigDecimal rating, String content, LocalDateTime createdAt) {
         this.id = id;
         this.restaurant = restaurant;
@@ -93,7 +93,7 @@ public class RestaurantReview {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        RestaurantReview that = (RestaurantReview) o;
+        Review that = (Review) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(restaurant, that.restaurant) &&
                 Objects.equals(user, that.user) &&
@@ -109,7 +109,7 @@ public class RestaurantReview {
 
     @Override
     public String toString() {
-        return "RestaurantReview{" +
+        return "Review{" +
                 "id=" + id +
                 ", restaurant=" + restaurant +
                 ", user=" + user +

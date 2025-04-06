@@ -8,13 +8,14 @@ import com.tablemaster_api.entity.Restaurant;
 import java.util.List;
 
 public interface IRestaurantService {
+
     ContactInfoDto getContactInfo(long restaurantId);
 
     List<RestaurantShortDto> getAllRestaurants();
 
     RestaurantDto getRestaurantById(long restaurantId);
 
-    String createRestaurant(Restaurant restaurant);
+    RestaurantDto addRestaurant(Restaurant restaurant);
 
     String deleteRestaurant(long restaurantId);
 
