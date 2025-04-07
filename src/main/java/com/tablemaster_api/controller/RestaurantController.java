@@ -28,7 +28,7 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getContactInfo(id));
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<List<RestaurantShortDto>> getAllRestaurants(
             @RequestParam(required = false, defaultValue = "countOfReviews")String sortBy,
             @RequestParam(required = false, defaultValue = "desc") String order) {
@@ -41,23 +41,23 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getAllSorted(sort));
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<RestaurantDto> getRestaurantById(@PathVariable long id) {
         return ResponseEntity.ok(restaurantService.getRestaurantById(id));
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<RestaurantDto> addRestaurant(@RequestBody Restaurant restaurant) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(restaurantService.addRestaurant(restaurant));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRestaurant(@PathVariable long id) {
         return ResponseEntity.ok(restaurantService.deleteRestaurant(id));
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<RestaurantDto> updateRestaurant(@PathVariable long id, RestaurantDto restaurantDto) {
         return ResponseEntity.ok(restaurantService.updateRestaurant(id, restaurantDto));
     }

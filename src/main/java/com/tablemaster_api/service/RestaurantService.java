@@ -1,23 +1,18 @@
 package com.tablemaster_api.service;
 
 import com.tablemaster_api.abstraction.repository.RestaurantRepository;
-import com.tablemaster_api.abstraction.repository.ReviewRepository;
 import com.tablemaster_api.abstraction.service.IRestaurantService;
 import com.tablemaster_api.dto.ContactInfoDto;
 import com.tablemaster_api.dto.RestaurantDto;
 import com.tablemaster_api.dto.RestaurantShortDto;
 import com.tablemaster_api.entity.Restaurant;
-import com.tablemaster_api.entity.Tag;
 import com.tablemaster_api.mapper.RestaurantDtoMapper;
-import com.tablemaster_api.mapper.ReviewDtoMapper;
 import com.tablemaster_api.mapper.RestaurantShortDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class RestaurantService implements IRestaurantService {

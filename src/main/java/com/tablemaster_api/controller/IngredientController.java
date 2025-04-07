@@ -21,28 +21,28 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<List<Ingredient>> getAllIngredients() {
         return ResponseEntity.ok(ingredientService.getAllIngredients());
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<IngredientDto> getIngredientById(@PathVariable long id) {
         return ResponseEntity.ok(ingredientService.getIngredientById(id));
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<IngredientDto> addIngredient(@RequestBody Ingredient ingredient) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ingredientService.addIngredient(ingredient));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteIngredient(@PathVariable long id) {
         return ResponseEntity.ok(ingredientService.deleteIngredient(id));
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<IngredientDto> updateIngredient(@PathVariable long id,
              @RequestBody IngredientDto ingredientDto) {
         return ResponseEntity.ok(ingredientService.updateIngredient(id, ingredientDto));

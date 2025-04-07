@@ -21,27 +21,27 @@ public class DishController {
         this.dishService = dishService;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public ResponseEntity<List<DishDto>> getAllDishes() {
         return ResponseEntity.ok(dishService.getAllDishes());
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DishDto> getDishById(@PathVariable long id) {
         return ResponseEntity.ok(dishService.getDishById(id));
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<DishDto> addDish(@RequestBody Dish dish) {
         return ResponseEntity.status(HttpStatus.CREATED).body(dishService.addDish(dish));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDish(@PathVariable long id) {
         return ResponseEntity.ok(dishService.deleteDish(id));
     }
 
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<DishDto> updateDish(@PathVariable long id, DishDto dishDto) {
         return ResponseEntity.ok(dishService.updateDish(id, dishDto));
     }
