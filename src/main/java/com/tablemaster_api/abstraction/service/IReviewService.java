@@ -1,5 +1,6 @@
 package com.tablemaster_api.abstraction.service;
 
+import com.tablemaster_api.dto.LeaveReviewDto;
 import com.tablemaster_api.dto.ReviewDto;
 import com.tablemaster_api.entity.Review;
 
@@ -7,21 +8,14 @@ import java.util.List;
 
 public interface IReviewService {
 
-    String leaveReview(Review review);
+    void leaveReview(LeaveReviewDto userReview, long restaurantId);
 
     List<ReviewDto> getAllReviews(long restaurantId);
 
-    Review getReviewById(long restaurantId, long reviewId);
+    Review getReviewById(long reviewId);
 
-    ReviewDto updateReview(long reviewId, ReviewDto restaurantReviewDto);
+    void updateReview(long reviewId, LeaveReviewDto reviewDto);
 
-    String deleteReview(long reviewId);
+    void deleteReview(long reviewId);
 
-    List<ReviewDto> orderReviewsByRatingDesc(long restaurantId);
-
-    List<ReviewDto> orderReviewsByRatingAsc(long restaurantId);
-
-    List<ReviewDto> orderReviewsByTimeDesc(long restaurantId);
-
-    List<ReviewDto> orderReviewsByTimeAsc(long restaurantId);
 }

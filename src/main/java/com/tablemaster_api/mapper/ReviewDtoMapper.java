@@ -1,5 +1,6 @@
 package com.tablemaster_api.mapper;
 
+import com.tablemaster_api.dto.LeaveReviewDto;
 import com.tablemaster_api.dto.ReviewDto;
 import com.tablemaster_api.entity.Review;
 import org.mapstruct.BeanMapping;
@@ -14,5 +15,5 @@ public interface ReviewDtoMapper {
     Review toEntity(ReviewDto restaurantReviewDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(ReviewDto restaurantReviewDto, @MappingTarget Review restaurantReview);
+    void updateEntityFromDto(LeaveReviewDto leaveReviewDto, @MappingTarget Review restaurantReview);
 }

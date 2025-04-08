@@ -1,13 +1,24 @@
 package com.tablemaster_api.service;
 
+import com.tablemaster_api.abstraction.repository.RestaurantRepository;
 import com.tablemaster_api.abstraction.repository.ReviewRepository;
+import com.tablemaster_api.abstraction.repository.UserRepository;
 import com.tablemaster_api.abstraction.service.IReviewService;
+import com.tablemaster_api.dto.LeaveReviewDto;
 import com.tablemaster_api.dto.ReviewDto;
+import com.tablemaster_api.entity.Restaurant;
 import com.tablemaster_api.entity.Review;
+import com.tablemaster_api.entity.User;
 import com.tablemaster_api.mapper.ReviewDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,20 +26,41 @@ public class ReviewService implements IReviewService {
 
     private final ReviewRepository restaurantReviewRepository;
     private final ReviewDtoMapper restaurantReviewDtoMapper;
+    private final UserRepository userRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final Logger logger = LoggerFactory.getLogger(ReviewService.class);
+    private final ReviewRepository reviewRepository;
+    private final ReviewDtoMapper reviewDtoMapper;
 
 
-    public ReviewService(ReviewRepository restaurantReviewRepository, ReviewDtoMapper restaurantReviewDtoMapper) {
+    public ReviewService(ReviewRepository restaurantReviewRepository, ReviewDtoMapper restaurantReviewDtoMapper,
+                         UserRepository userRepository,
+                         RestaurantRepository restaurantRepository, ReviewRepository reviewRepository, ReviewDtoMapper reviewDtoMapper) {
         this.restaurantReviewRepository = restaurantReviewRepository;
         this.restaurantReviewDtoMapper = restaurantReviewDtoMapper;
+        this.userRepository = userRepository;
+        this.restaurantRepository = restaurantRepository;
+        this.reviewRepository = reviewRepository;
+        this.reviewDtoMapper = reviewDtoMapper;
     }
 
-    public String leaveReview(Review review) {
+    public void leaveReview(LeaveReviewDto userReview, long restaurantId) {
         try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = userRepository.findByUsername(authentication.getName()).
+                    orElseThrow(() -> new EntityNotFoundException("User not found"));
+            Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                    .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
+            Review review = new Review();
+            review.setUser(user);
+            review.setContent(userReview.content());
+            review.setCreatedAt(LocalDateTime.now());
+            review.setRating(userReview.rating());
+            review.setRestaurant(restaurant);
             restaurantReviewRepository.save(review);
         } catch (Exception e) {
-            return e.getMessage();
+            logger.info(e.getMessage());
         }
-        return "The review was left successfully";
     }
 
     public List<ReviewDto> getAllReviews(long restaurantId) {
@@ -36,40 +68,29 @@ public class ReviewService implements IReviewService {
                 .stream().map(restaurantReviewDtoMapper::fromEntity).toList();
     }
 
-    public Review getReviewById(long restaurantId, long reviewId) {
-        return restaurantReviewRepository.findReviewByRestaurantId(restaurantId)
-                .stream().filter(r -> r.getId().equals(reviewId))
-                .findFirst().orElseThrow(() -> new EntityNotFoundException("Review not found"));
+    public Review getReviewById(long reviewId) {
+        return restaurantReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new EntityNotFoundException("Review not found"));
     }
 
-    public ReviewDto updateReview(long reviewId, ReviewDto restaurantReviewDto) {
+    public void updateReview(long reviewId, LeaveReviewDto reviewDto) {
         Review review = restaurantReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Review not found"));
-        restaurantReviewDtoMapper.updateEntityFromDto(restaurantReviewDto, review);
+        restaurantReviewDtoMapper.updateEntityFromDto(reviewDto, review);
         restaurantReviewRepository.save(review);
-        return restaurantReviewDtoMapper.fromEntity(review);
     }
 
-    public String deleteReview(long reviewId) {
+    public void deleteReview(long reviewId) {
         Review review = restaurantReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Review not found"));
         restaurantReviewRepository.delete(review);
-        return "Review deleted successfully";
     }
 
-    public List<ReviewDto> orderReviewsByRatingDesc(long restaurantId) {
-        return restaurantReviewRepository.orderByRatingDescending();
-    }
-
-    public List<ReviewDto> orderReviewsByRatingAsc(long restaurantId) {
-        return restaurantReviewRepository.orderByRatingAscending();
-    }
-
-    public List<ReviewDto> orderReviewsByTimeDesc(long restaurantId) {
-        return restaurantReviewRepository.orderByTimeDescending();
-    }
-
-    public List<ReviewDto> orderReviewsByTimeAsc(long restaurantId) {
-        return restaurantReviewRepository.orderByTimeAscending();
+    public List<ReviewDto> getAllSorted(long restaurantId, Sort sort) {
+        List<Review> reviews = reviewRepository.findAll(sort);
+        return reviews.stream()
+                .filter(r -> r.getRestaurant().getId().equals(restaurantId))
+                .map(reviewDtoMapper::fromEntity)
+                .toList();
     }
 }
