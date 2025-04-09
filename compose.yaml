@@ -5,14 +5,36 @@ services:
     ports:
       - "5433:5432"
     environment:
-      - POSTGRES_USER=${SPRING_DATASOURCE_URL}
+      - POSTGRES_USER=postgre
       - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-      - POSTGRES_DB=${SPRING_DATASOURCE_USERNAME}
+      - POSTGRES_DB=postgres
       - config.support_escapes=true
     volumes:
-      - ./pg_data:/var/lib/postgresql/data
+      - supabase_data:/var/lib/postgresql/data
   redis:
     ports:
       - "6379:6379"
+
+  maildev:
+    image: maildev/maildev
+    container_name: maildev
+    ports:
+      - "1080:1080"
+      - "587:587"
+
+  app:
+    build: .
+    container_name: tablemaster
+    ports:
+      - "8080:8080"
+    depends_on:
+      - maildev
+      - redis
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 volumes:
-  db:
+  supabase_data:

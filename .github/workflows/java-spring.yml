@@ -1,0 +1,72 @@
+name: Java Spring CI With Docker Compose
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+env:
+  SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+  SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+  SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+  MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+  MAIL_HOST: ${{ secrets.MAIL_HOST }}
+  MAIL_PORT: ${{ secrets.MAIL_PORT }}
+  MAILDEV_UI_PORT: https://${MAIL_HOST}:1080
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: ./mvnw clean install -DskipTests
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Set up Flyway migrations
+        uses: kurkop/flyway-postgres-action@master
+        with:
+          flyway_conf_sha: ${{ secrets.FLYWAY_CONF }}
+          flyway_sql: './db/migration'
+
+      - name: Set up Docker(for Testcontainers)
+        uses: docker/setup-buildx-action@v3
+
+      - name: Grant permission to use Docker
+        run: sudo chmod 666 /var/run/docker.sock
+
+      - name: Run tests with Maven
+        run: ./mvnw test
+
+      - name: Upload tests with failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: target/surefire-reports
+
+      - name: Upload jar artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-jar
+          path: target/*.jar
+
+

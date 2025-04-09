@@ -3,13 +3,11 @@ server:
 spring:
   application:
     name: TableMaster API
-  elasticsearch:
-    uris: http://localhost:9200
   mail:
-    port: 587
-    host: smtp.gmail.com
-    username: luckyartem901@gmail.com
-    password: svmo utjz ekaf wqrq
+    port: ${MAIL_PORT}
+    host: ${MAIL_HOST}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
