@@ -32,9 +32,10 @@ jobs:
 
       - name: Grant permission to use Maven
         run: chmod +x mvnw
-        
+
       - name: Build with Maven
         run: ./mvnw clean install -DskipTests
+
 
       - name: Cache Maven dependencies
         uses: actions/cache@v4
