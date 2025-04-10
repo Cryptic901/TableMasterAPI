@@ -14,7 +14,7 @@ env:
   MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
   MAIL_HOST: ${{ secrets.MAIL_HOST }}
   MAIL_PORT: ${{ secrets.MAIL_PORT }}
-  MAILDEV_UI_PORT: https://${MAIL_HOST}:1080
+  MAILDEV_UI_PORT: https://localhost:1080
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
@@ -58,13 +58,14 @@ jobs:
 
       - name: Upload tests with failure
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+
         with:
           name: test-results
           path: target/surefire-reports
 
       - name: Upload jar artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-jar
           path: target/*.jar
