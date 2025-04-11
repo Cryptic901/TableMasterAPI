@@ -27,9 +27,6 @@
         <url/>
     </scm>
     <properties>
-        <flyway.url>jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:5432/postgres</flyway.url>
-        <flyway.user>postgres.teefqdmmynqovripovee</flyway.user>
-        <flyway.password>E4dSR@FNT95W6#2</flyway.password>
         <java.version>17</java.version>
     </properties>
     <dependencies>
@@ -127,6 +124,11 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
             <version>10.20.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.2.0</version>
         </dependency>
     </dependencies>
 
