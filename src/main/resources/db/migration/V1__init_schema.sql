@@ -33,20 +33,20 @@ CREATE TABLE dishes_ingredients
     CONSTRAINT dishes_ingredients_pkey PRIMARY KEY (ingredient_id, dish_id)
 );
 
-CREATE TABLE flyway_schema_history
-(
-    installed_rank INTEGER                                   NOT NULL,
-    version        VARCHAR(50),
-    description    VARCHAR(200)                              NOT NULL,
-    type           VARCHAR(20)                               NOT NULL,
-    script         VARCHAR(1000)                             NOT NULL,
-    checksum       INTEGER,
-    installed_by   VARCHAR(100)                              NOT NULL,
-    installed_on   TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
-    execution_time INTEGER                                   NOT NULL,
-    success        BOOLEAN                                   NOT NULL,
-    CONSTRAINT flyway_schema_history_pk PRIMARY KEY (installed_rank)
-);
+-- CREATE TABLE flyway_schema_history
+-- (
+--     installed_rank INTEGER                                   NOT NULL,
+--     version        VARCHAR(50),
+--     description    VARCHAR(200)                              NOT NULL,
+--     type           VARCHAR(20)                               NOT NULL,
+--     script         VARCHAR(1000)                             NOT NULL,
+--     checksum       INTEGER,
+--     installed_by   VARCHAR(100)                              NOT NULL,
+--     installed_on   TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW() NOT NULL,
+--     execution_time INTEGER                                   NOT NULL,
+--     success        BOOLEAN                                   NOT NULL,
+--     CONSTRAINT flyway_schema_history_pk PRIMARY KEY (installed_rank)
+-- );
 
 CREATE TABLE ingredients
 (
@@ -147,7 +147,7 @@ ALTER TABLE dishes_ingredients
 ALTER TABLE users
     ADD CONSTRAINT users_email_key UNIQUE (email);
 
-CREATE INDEX flyway_schema_history_s_idx ON flyway_schema_history (success);
+-- CREATE INDEX flyway_schema_history_s_idx ON flyway_schema_history (success);
 
 ALTER TABLE dishes_ingredients
     ADD CONSTRAINT dishes_ingredients_dish_id_fkey FOREIGN KEY (dish_id) REFERENCES dishes (id) ON DELETE NO ACTION;
