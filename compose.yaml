@@ -1,17 +1,20 @@
 services:
+
   db:
-    image: supabase/postgres:15.8.1.0
+    image: supabase/postgres:15.8.1.058
     container_name: postgres
     ports:
       - "5433:5432"
     environment:
-      - POSTGRES_USER=postgre
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - POSTGRES_DB=postgres
       - config.support_escapes=true
     volumes:
       - supabase_data:/var/lib/postgresql/data
   redis:
+    image: redis:latest
+    container_name: redis
     ports:
       - "6379:6379"
 
@@ -23,6 +26,7 @@ services:
       - "587:587"
 
   app:
+    env_file: ".env"
     build: .
     container_name: tablemaster
     ports:
@@ -30,11 +34,15 @@ services:
     depends_on:
       - maildev
       - redis
-      - postgres
+      - db
     environment:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
 volumes:
   supabase_data:

@@ -4,6 +4,7 @@ import com.tablemaster_api.enums.DaysOfWeek;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Entity
