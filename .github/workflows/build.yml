@@ -1,4 +1,4 @@
-name: Java Spring CI With Docker Compose
+name: Build
 
 on:
   push:

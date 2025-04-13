@@ -9,8 +9,13 @@ import com.tablemaster_api.entity.Restaurant;
 import com.tablemaster_api.mapper.RestaurantDtoMapper;
 import com.tablemaster_api.mapper.RestaurantShortDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +33,7 @@ public class RestaurantService implements IRestaurantService {
         this.restaurantShortDtoMapper = restaurantShortDtoMapper;
     }
 
+    @Cacheable(value = "restaurants", key = "#restaurantId")
     public ContactInfoDto getContactInfo(long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
@@ -39,16 +45,22 @@ public class RestaurantService implements IRestaurantService {
                 .stream().map(restaurantShortDtoMapper::fromEntity).toList();
     }
 
+    @Cacheable(value = "restaurants", key = "#restaurantId")
     public RestaurantDto getRestaurantById(long restaurantId) {
         return restaurantDtoMapper.fromEntity(restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found")));
     }
-
+    @CacheEvict(value = "restaurants", key = "#restaurant.id")
     public RestaurantDto addRestaurant(Restaurant restaurant) {
         restaurantRepository.save(restaurant);
         return restaurantDtoMapper.fromEntity(restaurant);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", key = "#restaurantId"),
+            @CacheEvict(value = "restaurants", allEntries = true)
+    })
+    @Transactional
     public String deleteRestaurant(long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
@@ -56,6 +68,7 @@ public class RestaurantService implements IRestaurantService {
         return "Restaurant deleted successfully!";
     }
 
+    @CacheEvict(value = "restaurants", key = "#restaurantId")
     public RestaurantDto updateRestaurant(long restaurantId, RestaurantDto restaurantDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));

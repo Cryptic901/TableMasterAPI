@@ -6,7 +6,12 @@ import com.tablemaster_api.dto.DishDto;
 import com.tablemaster_api.entity.Dish;
 import com.tablemaster_api.mapper.DishDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.annotations.Cache;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,16 +31,23 @@ public class DishService implements IDishService {
                 .stream().map(dishDtoMapper::fromEntity).toList();
     }
 
+    @Cacheable(value = "dishes", key = "#id", unless = "#result == null")
     public DishDto getDishById(long id) {
         return dishDtoMapper.fromEntity(dishRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Dish not found")));
     }
 
+    @CacheEvict(value = "dishes", key = "#dish.id")
     public DishDto addDish(Dish dish) {
         dishRepository.save(dish);
         return dishDtoMapper.fromEntity(dish);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "dishes", key = "#dishId"),
+            @CacheEvict(value = "dishes", allEntries = true)
+    })
+    @Transactional
     public String deleteDish(long dishId) {
         Dish dish = dishRepository.findById(dishId)
                 .orElseThrow(() -> new EntityNotFoundException("Dish not found"));
@@ -43,6 +55,7 @@ public class DishService implements IDishService {
         return "Dish deleted successfully";
     }
 
+    @CacheEvict(value = "dishes", key = "#dishId")
     public DishDto updateDish(long dishId, DishDto dishDto) {
         Dish dish = dishRepository.findById(dishId)
                 .orElseThrow(() -> new EntityNotFoundException("Dish not found"));

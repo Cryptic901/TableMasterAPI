@@ -13,6 +13,9 @@ import com.tablemaster_api.mapper.ReviewDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,19 +70,23 @@ public class ReviewService implements IReviewService {
         return restaurantReviewRepository.findReviewByRestaurantId(restaurantId)
                 .stream().map(restaurantReviewDtoMapper::fromEntity).toList();
     }
-
+    @Cacheable(value = "reviews", key = "#reviewId")
     public Review getReviewById(long reviewId) {
         return restaurantReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Review not found"));
     }
 
+    @CacheEvict(value = "reviews", key = "#reviewId")
     public void updateReview(long reviewId, LeaveReviewDto reviewDto) {
         Review review = restaurantReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Review not found"));
         restaurantReviewDtoMapper.updateEntityFromDto(reviewDto, review);
         restaurantReviewRepository.save(review);
     }
-
+    @Caching(evict = {
+            @CacheEvict(value = "reviews", key = "#reviewId"),
+            @CacheEvict(value = "reviews", allEntries = true)
+    })
     public void deleteReview(long reviewId) {
         Review review = restaurantReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Review not found"));
