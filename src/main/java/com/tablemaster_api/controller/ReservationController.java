@@ -6,6 +6,7 @@ import com.tablemaster_api.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,7 @@ public class ReservationController {
     @PostMapping("tables/reserve/restaurant/{restaurantId}/table/{tableId}")
     public ResponseEntity<String> reserveTable(
             @PathVariable long restaurantId, @PathVariable long tableId,
-            TimeIntervalDto timeIntervalDto) {
-        return ResponseEntity.ok(reservationService.reserveTable(restaurantId, tableId, timeIntervalDto));
+            @RequestBody TimeIntervalDto timeIntervalDto, Principal principal) {
+        return ResponseEntity.ok(reservationService.reserveTable(restaurantId, tableId, timeIntervalDto, principal));
     }
 }

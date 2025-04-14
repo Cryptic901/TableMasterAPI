@@ -1,11 +1,13 @@
 package com.tablemaster_api.entity;
 
+import com.tablemaster_api.enums.Roles;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,17 +25,20 @@ public class User implements UserDetails {
     private String password;
 
     @Column(name = "verification_code")
-    private String verificationCode;
+    private Integer verificationCode;
 
     @Column(name = "verification_expires")
-    private String verificationExpiresAt;
+    private LocalTime verificationCodeExpiresAt;
 
     @Column(name = "enabled")
     private boolean enabled;
 
+    @ElementCollection(targetClass = Roles.class)
+    private Collection<Roles> roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).toList();
     }
 
     @Override
@@ -75,20 +80,28 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getVerificationCode() {
+    public Integer getVerificationCode() {
         return verificationCode;
     }
 
-    public void setVerificationCode(String verificationCode) {
+    public void setVerificationCode(Integer verificationCode) {
         this.verificationCode = verificationCode;
     }
 
-    public String getVerificationExpiresAt() {
-        return verificationExpiresAt;
+    public LocalTime getVerificationCodeExpiresAt() {
+        return verificationCodeExpiresAt;
     }
 
-    public void setVerificationExpiresAt(String verificationExpiresAt) {
-        this.verificationExpiresAt = verificationExpiresAt;
+    public void setVerificationCodeExpiresAt(LocalTime verificationCodeExpiresAt) {
+        this.verificationCodeExpiresAt = verificationCodeExpiresAt;
+    }
+
+    public Collection<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Roles> roles) {
+        this.roles = roles;
     }
 
     public void setEnabled(boolean enabled) {
@@ -98,15 +111,25 @@ public class User implements UserDetails {
     public User() {
     }
 
+
+
     public User(Long id, String username, String email, String password,
-                String verificationCode, String verificationExpiresAt, boolean enabled) {
+                Integer verificationCode, LocalTime verificationCodeExpiresAt, boolean enabled, Collection<Roles> roles) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.verificationCode = verificationCode;
-        this.verificationExpiresAt = verificationExpiresAt;
+        this.verificationCodeExpiresAt = verificationCodeExpiresAt;
         this.enabled = enabled;
+        this.roles = roles;
+    }
+
+    public User(String username, String email, String password, Collection<Roles> roles) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
     }
 
     @Override
@@ -119,12 +142,13 @@ public class User implements UserDetails {
                 Objects.equals(email, user.email) &&
                 Objects.equals(password, user.password) &&
                 Objects.equals(verificationCode, user.verificationCode) &&
-                Objects.equals(verificationExpiresAt, user.verificationExpiresAt);
+                Objects.equals(verificationCodeExpiresAt, user.verificationCodeExpiresAt) &&
+                Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, email, password, verificationCode, verificationExpiresAt, enabled);
+        return Objects.hash(id, username, email, password, verificationCode, verificationCodeExpiresAt, enabled, roles);
     }
 
     @Override
@@ -135,7 +159,7 @@ public class User implements UserDetails {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", verificationCode='" + verificationCode + '\'' +
-                ", verificationExpiresAt='" + verificationExpiresAt + '\'' +
+                ", verificationCodeExpiresAt='" + verificationCodeExpiresAt + '\'' +
                 ", enabled=" + enabled +
                 '}';
     }

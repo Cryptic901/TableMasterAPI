@@ -7,6 +7,7 @@ import com.tablemaster_api.entity.Reservation;
 import com.tablemaster_api.entity.Tables;
 import com.tablemaster_api.entity.User;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface IReservationService {
@@ -16,5 +17,5 @@ public interface IReservationService {
     void sendReservingMessageToEmail(User user, RestaurantDto restaurant,
                                      ContactInfoDto contactInfo, Reservation reservation, Tables table);
 
-    String reserveTable(long restaurantId, long tableId, TimeIntervalDto timeIntervalDto);
+    String reserveTable(long restaurantId, long tableId, TimeIntervalDto timeIntervalDto, Principal principal);
 }

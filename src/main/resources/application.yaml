@@ -17,7 +17,7 @@ spring:
   security:
     jwt:
       secret-key: ${JWT_SECRET:hM9+XZfbJvGf/+nzwQl7q3fZnI2lhcwJmJI4O0KyQic/WFSpLndWqnRiGso7aVR08tnVJdfSaMRGrr+YyfMj+A==}
-      expiration-time: 3600000
+      expiration-time: 1h
   jpa:
     hibernate:
       ddl-auto: update

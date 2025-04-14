@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -138,7 +139,7 @@ public class ReservationService implements IReservationService {
     }
 
     @Transactional
-    public String reserveTable(long restaurantId, long tableId, TimeIntervalDto timeIntervalDto) {
+    public String reserveTable(long restaurantId, long tableId, TimeIntervalDto timeIntervalDto, Principal principal) {
 
         Tables table = tablesRepository.findById(tableId)
                 .orElseThrow(() -> new EntityNotFoundException("Table not found"));
@@ -146,8 +147,7 @@ public class ReservationService implements IReservationService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByUsername(authentication.getName())
+        User user = userRepository.findByUsername(principal.getName())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         if (!getFreeTables(restaurantId, timeIntervalDto).contains(table)) {
