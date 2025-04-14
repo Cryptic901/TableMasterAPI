@@ -52,11 +52,11 @@ public class JwtTokenService {
         return generateToken(userDetails, new HashMap<>());
     }
 
-    public String getUsernameFromToken(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String getRolesFromToken(String token) {
+    public String extractRoles(String token) {
         return extractClaim(token, claims -> claims.get("roles", String.class));
     }
 
@@ -79,11 +79,11 @@ public class JwtTokenService {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        return userDetails.getUsername().equals(getUsernameFromToken(token))
+        return userDetails.getUsername().equals(extractUsername(token))
                 && !isTokenExpired(token);
     }
 
     public Boolean hasRole(String role, String token) {
-        return getRolesFromToken(token).contains(role);
+        return extractRoles(token).contains(role);
     }
 }
