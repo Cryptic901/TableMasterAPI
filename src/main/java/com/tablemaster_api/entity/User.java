@@ -33,7 +33,7 @@ public class User implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @ElementCollection(targetClass = Roles.class)
+    @ElementCollection(targetClass = Roles.class, fetch = FetchType.EAGER)
     private Collection<Roles> roles;
 
     @Override
