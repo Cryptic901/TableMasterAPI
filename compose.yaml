@@ -23,7 +23,7 @@ services:
     container_name: maildev
     ports:
       - "1080:1080"
-      - "587:587"
+      - "1025:1025"
 
   app:
     env_file: ".env"

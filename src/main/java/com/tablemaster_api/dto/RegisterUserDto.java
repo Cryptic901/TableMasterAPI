@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
+import java.util.List;
 
 public record RegisterUserDto(
         @NotBlank(message = "Username is required")
@@ -14,5 +15,4 @@ public record RegisterUserDto(
         @Email(message = "Invalid email")
         String email,
         @Size(min = 6, message = "Password must be at least 6 characters")
-        String password,
-        @JsonIgnore Collection<Roles> roles) {}
+        String password) {}

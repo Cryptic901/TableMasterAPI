@@ -1,63 +1,46 @@
 package com.tablemaster_api.service;
 
 import com.tablemaster_api.abstraction.repository.UserRepository;
-import com.tablemaster_api.dto.LoginResponseDto;
-import com.tablemaster_api.dto.LoginUserDto;
-import com.tablemaster_api.dto.RegisterUserDto;
-import com.tablemaster_api.dto.VerifyUserDto;
+import com.tablemaster_api.dto.*;
 import com.tablemaster_api.entity.User;
+import com.tablemaster_api.enums.Roles;
 import jakarta.mail.MessagingException;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
-public class AuthenticationService implements UserDetailsService {
-
+@Transactional
+public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenService jwtTokenService;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    public AuthenticationService(UserRepository userRepository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, EmailService emailService, PasswordEncoder passwordEncoder) {
+    public AuthenticationService(UserRepository userRepository, AuthenticationManager authenticationManager, JwtTokenService jwtTokenService, EmailService emailService, PasswordEncoder passwordEncoder, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtTokenService = jwtTokenService;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(
-                String.format("User %s not found", username)
-        ));
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                user.isEnabled(),
-                true,
-                true,
-                true,
-                user.getAuthorities()
-        );
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     public User registerUser(RegisterUserDto registerUserDto) throws MessagingException {
         User user = new User(registerUserDto.username(), registerUserDto.email(),
                 passwordEncoder.encode(registerUserDto.password()),
-                registerUserDto.roles());
+                List.of(Roles.ROLE_USER));
         user.setVerificationCode(generateRandomSixNumber());
         user.setVerificationCodeExpiresAt(LocalTime.now().plusMinutes(15));
         user.setEnabled(false);
@@ -73,7 +56,7 @@ public class AuthenticationService implements UserDetailsService {
         );
 
         return new LoginResponseDto(
-                jwtTokenService.generateToken(loadUserByUsername(loginUserDto.username())),
+                jwtTokenService.generateToken(userDetailsServiceImpl.loadUserByUsername(loginUserDto.username())),
                 jwtTokenService.getExpiration()
         );
     }
@@ -98,8 +81,8 @@ public class AuthenticationService implements UserDetailsService {
         }
     }
 
-    public void resendVerificationEmail(String email) throws MessagingException, AuthenticationException {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+    public void resendVerificationEmail(EmailDto emailDto) throws MessagingException, AuthenticationException {
+        Optional<User> optionalUser = userRepository.findByEmail(emailDto.email());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (user.isEnabled()) {
@@ -110,7 +93,7 @@ public class AuthenticationService implements UserDetailsService {
             sendVerificationEmail(user);
             userRepository.save(user);
         } else {
-            throw new AuthenticationException(String.format("User with email %s not found", email));
+            throw new AuthenticationException(String.format("User with email %s not found", emailDto.email()));
         }
     }
 

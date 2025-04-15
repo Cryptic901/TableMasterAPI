@@ -1,7 +1,7 @@
 package com.tablemaster_api.configuration;
 
-import com.tablemaster_api.service.AuthenticationService;
 import com.tablemaster_api.service.JwtTokenService;
+import com.tablemaster_api.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,11 +21,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     private final JwtTokenService jwtTokenService;
-    private final AuthenticationService authenticationService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    public JwtAuthenticationFilter(JwtTokenService jwtTokenService, AuthenticationService authenticationService) {
+    public JwtAuthenticationFilter(JwtTokenService jwtTokenService,UserDetailsServiceImpl userDetailsServiceImpl) {
         this.jwtTokenService = jwtTokenService;
-        this.authenticationService = authenticationService;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = authenticationService.loadUserByUsername(username);
+            UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
 
             if (jwtTokenService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
