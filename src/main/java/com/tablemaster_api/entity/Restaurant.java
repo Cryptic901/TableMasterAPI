@@ -3,7 +3,6 @@ package com.tablemaster_api.entity;
 import com.tablemaster_api.enums.DaysOfWeek;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -34,10 +33,10 @@ public class Restaurant {
     private Integer countOfReviews = 0;
 
     @Column(name = "work_time_open", nullable = false)
-    private LocalDateTime workTimeOpen;
+    private LocalTime workTimeOpen;
 
     @Column(name = "work_time_closed", nullable = false)
-    private LocalDateTime workTimeClosed;
+    private LocalTime workTimeClosed;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(nullable = false)
@@ -138,19 +137,19 @@ public class Restaurant {
         this.countOfReviews = countOfReviews;
     }
 
-    public LocalDateTime getWorkTimeOpen() {
+    public LocalTime getWorkTimeOpen() {
         return workTimeOpen;
     }
 
-    public void setWorkTimeOpen(LocalDateTime workTimeOpen) {
+    public void setWorkTimeOpen(LocalTime workTimeOpen) {
         this.workTimeOpen = workTimeOpen;
     }
 
-    public LocalDateTime getWorkTimeClosed() {
+    public LocalTime getWorkTimeClosed() {
         return workTimeClosed;
     }
 
-    public void setWorkTimeClosed(LocalDateTime workTimeClosed) {
+    public void setWorkTimeClosed(LocalTime workTimeClosed) {
         this.workTimeClosed = workTimeClosed;
     }
 
@@ -183,7 +182,7 @@ public class Restaurant {
 
     public Restaurant(Long id, String name, String description, String address, String phone,
                       String email, String location, Double rating, Integer countOfReviews,
-                      LocalDateTime workTimeOpen, LocalDateTime workTimeClosed, List<DaysOfWeek> workDays,
+                      LocalTime workTimeOpen, LocalTime workTimeClosed, List<DaysOfWeek> workDays,
                       Set<Tag> tags, List<Reservation> reservations, List<Review> reviews) {
         this.id = id;
         this.name = name;

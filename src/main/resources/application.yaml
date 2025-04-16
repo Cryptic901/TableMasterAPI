@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 spring:
   application:
     name: TableMaster API
@@ -33,6 +33,7 @@ spring:
       dialect: postgresql
     redis:
       port: 6379
+      host: redis
   cache:
     type: redis
   flyway:

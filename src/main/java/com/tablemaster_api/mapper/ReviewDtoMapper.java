@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring", uses = {TimeMapper.class})
+@Mapper(componentModel = "spring")
 public interface ReviewDtoMapper {
 
     ReviewDto fromEntity(Review restaurantReview);

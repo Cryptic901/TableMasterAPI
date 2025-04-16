@@ -5,7 +5,6 @@ import com.tablemaster_api.entity.Dish;
 import com.tablemaster_api.service.DishService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class DishController {
     }
 
     @PostMapping
-    public ResponseEntity<DishDto> addDish(@RequestBody Dish dish) {
+    public ResponseEntity<Dish> addDish(@RequestBody DishDto dish) {
         return ResponseEntity.status(HttpStatus.CREATED).body(dishService.addDish(dish));
     }
 

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring", uses = {TimeMapper.class})
+@Mapper(componentModel = "spring")
 public interface RestaurantDtoMapper {
 
     RestaurantDto fromEntity(Restaurant restaurant);

@@ -12,7 +12,7 @@ public interface IDishService {
 
     DishDto getDishById(long dishId);
 
-    DishDto addDish(Dish dish);
+    Dish addDish(DishDto dish);
 
     String deleteDish(long dishId);
 

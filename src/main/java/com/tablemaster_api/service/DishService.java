@@ -37,10 +37,10 @@ public class DishService implements IDishService {
                 .orElseThrow(() -> new EntityNotFoundException("Dish not found")));
     }
 
-    @CacheEvict(value = "dishes", key = "#dish.id")
-    public DishDto addDish(Dish dish) {
-        dishRepository.save(dish);
-        return dishDtoMapper.fromEntity(dish);
+    @CacheEvict(value = "dishes", key = "#dish.name")
+    public Dish addDish(DishDto dish) {
+        dishRepository.save(dishDtoMapper.toEntity(dish));
+        return dishDtoMapper.toEntity(dish);
     }
 
     @Caching(evict = {
