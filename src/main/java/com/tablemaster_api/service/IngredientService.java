@@ -6,7 +6,11 @@ import com.tablemaster_api.dto.IngredientDto;
 import com.tablemaster_api.entity.Ingredient;
 import com.tablemaster_api.mapper.IngredientDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,15 +29,23 @@ public class IngredientService implements IIngredientService {
         return ingredientRepository.findAll();
     }
 
+    @Cacheable(value = "ingredients", key = "#ingredientId")
     public IngredientDto getIngredientById(long ingredientId) {
         return ingredientDtoMapper.fromEntity(ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found")));
     }
+
+    @CacheEvict(value = "ingredients", key = "#ingredient.id")
     public IngredientDto addIngredient(Ingredient ingredient) {
             ingredientRepository.save(ingredient);
             return ingredientDtoMapper.fromEntity(ingredient);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "ingredients", key = "#ingredientId"),
+            @CacheEvict(value = "ingredients", allEntries = true)
+    })
+    @Transactional
     public String deleteIngredient(long ingredientId) {
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));
@@ -41,6 +53,7 @@ public class IngredientService implements IIngredientService {
         return "Ingredient deleted successfully";
     }
 
+    @CacheEvict(value = "ingredients", key = "#ingredientId")
     public IngredientDto updateIngredient(long ingredientId, IngredientDto ingredientDto) {
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new EntityNotFoundException("Ingredient not found"));

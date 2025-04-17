@@ -89,13 +89,10 @@ public class Dish {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Dish dish = (Dish) o;
-        return Objects.equals(id, dish.id) &&
-                Objects.equals(name, dish.name) &&
-                Objects.equals(restaurant, dish.restaurant) &&
-                Objects.equals(price, dish.price) &&
-                Objects.equals(ingredients, dish.ingredients);
+        return Objects.equals(id, dish.id) && Objects.equals(name, dish.name) && Objects.equals(restaurant, dish.restaurant) && Objects.equals(price, dish.price) && Objects.equals(ingredients, dish.ingredients);
     }
 
     @Override

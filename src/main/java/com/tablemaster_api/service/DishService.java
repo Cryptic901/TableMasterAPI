@@ -31,7 +31,7 @@ public class DishService implements IDishService {
                 .stream().map(dishDtoMapper::fromEntity).toList();
     }
 
-    @Cacheable(value = "dishes", key = "#id", unless = "#result == null")
+    @Cacheable(value = "dishes", key = "#id")
     public DishDto getDishById(long id) {
         return dishDtoMapper.fromEntity(dishRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Dish not found")));

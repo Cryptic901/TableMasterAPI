@@ -1,5 +1,7 @@
 package com.tablemaster_api.dto;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -10,4 +12,5 @@ public record RestaurantShortDto(
         LocalTime workTimeOpen,
         LocalTime workTimeClosed,
         Double rating
-) {}
+) {
+}

@@ -23,8 +23,8 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
 
-    @GetMapping("/contactInfo")
-    public ResponseEntity<ContactInfoDto> getContactInfo(long id) {
+    @GetMapping("/{id}/contactInfo")
+    public ResponseEntity<ContactInfoDto> getContactInfo(@PathVariable long id) {
         return ResponseEntity.ok(restaurantService.getContactInfo(id));
     }
 
