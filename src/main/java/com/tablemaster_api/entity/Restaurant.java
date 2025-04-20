@@ -57,148 +57,159 @@ public class Restaurant {
     private List<Review> reviews = new ArrayList<>();
 
 
-    public List<Review> getReviews() {
-        return reviews;
+    public static class Builder {
+        private final String name;
+        private final String address;
+        private final String location;
+        private final LocalTime workTimeOpen;
+        private final LocalTime workTimeClosed;
+
+        private String description;
+        private String phone;
+        private String email;
+        private Double rating;
+        private Integer countOfReviews = 0;
+        private Set<Tag> tags = new HashSet<>();
+        private List<Reservation> reservations = new ArrayList<>();
+        private List<Review> reviews = new ArrayList<>();
+        private List<DaysOfWeek> workDays = new ArrayList<>();
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder rating(Double rating) {
+            this.rating = rating;
+            return this;
+        }
+
+        public Builder countOfReviews(Integer countOfReviews) {
+            this.countOfReviews = countOfReviews;
+            return this;
+        }
+
+        public Builder tags(Set<Tag> tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public Builder reservations(List<Reservation> reservations) {
+            this.reservations = reservations;
+            return this;
+        }
+
+        public Builder reviews(List<Review> reviews) {
+            this.reviews = reviews;
+            return this;
+        }
+
+        public Builder workDays(List<DaysOfWeek> workDays) {
+            this.workDays = workDays;
+            return this;
+        }
+
+        public Restaurant build() {
+            return new Restaurant(this);
+        }
+
+        public Builder(String name, String address, String location, LocalTime workTimeOpen, LocalTime workTimeClosed) {
+            this.name = name;
+            this.address = address;
+            this.location = location;
+            this.workTimeOpen = workTimeOpen;
+            this.workTimeClosed = workTimeClosed;
+        }
     }
 
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
+    public Restaurant() {
+    }
+
+    public Restaurant(Builder builder) {
+        this.name = builder.name;
+        this.address = builder.address;
+        this.location = builder.location;
+        this.workTimeOpen = builder.workTimeOpen;
+        this.workTimeClosed = builder.workTimeClosed;
+        this.description = builder.description;
+        this.phone = builder.phone;
+        this.email = builder.email;
+        this.rating = builder.rating;
+        this.countOfReviews = builder.countOfReviews;
+        this.tags = builder.tags;
+        this.reservations = builder.reservations;
+        this.reviews = builder.reviews;
+        this.workDays = builder.workDays;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public Double getRating() {
         return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
     }
 
     public Integer getCountOfReviews() {
         return countOfReviews;
     }
 
-    public void setCountOfReviews(Integer countOfReviews) {
-        this.countOfReviews = countOfReviews;
-    }
-
     public LocalTime getWorkTimeOpen() {
         return workTimeOpen;
-    }
-
-    public void setWorkTimeOpen(LocalTime workTimeOpen) {
-        this.workTimeOpen = workTimeOpen;
     }
 
     public LocalTime getWorkTimeClosed() {
         return workTimeClosed;
     }
 
-    public void setWorkTimeClosed(LocalTime workTimeClosed) {
-        this.workTimeClosed = workTimeClosed;
-    }
-
     public List<DaysOfWeek> getWorkDays() {
         return workDays;
-    }
-
-    public void setWorkDays(List<DaysOfWeek> workDays) {
-        this.workDays = workDays;
     }
 
     public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
     public List<Reservation> getReservations() {
         return reservations;
     }
 
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
-    }
-
-    public Restaurant() {
-    }
-
-    public Restaurant(Long id, String name, String description, String address, String phone,
-                      String email, String location, Double rating, Integer countOfReviews,
-                      LocalTime workTimeOpen, LocalTime workTimeClosed, List<DaysOfWeek> workDays,
-                      Set<Tag> tags, List<Reservation> reservations, List<Review> reviews) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.address = address;
-        this.phone = phone;
-        this.email = email;
-        this.location = location;
-        this.rating = rating;
-        this.countOfReviews = countOfReviews;
-        this.workTimeOpen = workTimeOpen;
-        this.workTimeClosed = workTimeClosed;
-        this.workDays = workDays;
-        this.tags = tags;
-        this.reservations = reservations;
-        this.reviews = reviews;
+    public List<Review> getReviews() {
+        return reviews;
     }
 
     @Override

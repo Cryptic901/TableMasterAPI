@@ -28,7 +28,6 @@ import java.util.List;
 public class ReviewService implements IReviewService {
 
     private final ReviewRepository restaurantReviewRepository;
-    private final ReviewDtoMapper restaurantReviewDtoMapper;
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
     private final Logger logger = LoggerFactory.getLogger(ReviewService.class);
@@ -36,11 +35,10 @@ public class ReviewService implements IReviewService {
     private final ReviewDtoMapper reviewDtoMapper;
 
 
-    public ReviewService(ReviewRepository restaurantReviewRepository, ReviewDtoMapper restaurantReviewDtoMapper,
+    public ReviewService(ReviewRepository restaurantReviewRepository,
                          UserRepository userRepository,
                          RestaurantRepository restaurantRepository, ReviewRepository reviewRepository, ReviewDtoMapper reviewDtoMapper) {
         this.restaurantReviewRepository = restaurantReviewRepository;
-        this.restaurantReviewDtoMapper = restaurantReviewDtoMapper;
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
         this.reviewRepository = reviewRepository;
@@ -68,7 +66,7 @@ public class ReviewService implements IReviewService {
 
     public List<ReviewDto> getAllReviews(long restaurantId) {
         return restaurantReviewRepository.findReviewByRestaurantId(restaurantId)
-                .stream().map(restaurantReviewDtoMapper::fromEntity).toList();
+                .stream().map(reviewDtoMapper::fromEntity).toList();
     }
     @Cacheable(value = "reviews", key = "#reviewId")
     public Review getReviewById(long reviewId) {
@@ -80,7 +78,7 @@ public class ReviewService implements IReviewService {
     public void updateReview(long reviewId, LeaveReviewDto reviewDto) {
         Review review = restaurantReviewRepository.findById(reviewId)
                 .orElseThrow(() -> new EntityNotFoundException("Review not found"));
-        restaurantReviewDtoMapper.updateEntityFromDto(reviewDto, review);
+        reviewDtoMapper.updateEntityFromDto(reviewDto, review);
         restaurantReviewRepository.save(review);
     }
     @Caching(evict = {

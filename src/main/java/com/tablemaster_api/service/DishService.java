@@ -6,7 +6,6 @@ import com.tablemaster_api.dto.DishDto;
 import com.tablemaster_api.entity.Dish;
 import com.tablemaster_api.mapper.DishDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.annotations.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;

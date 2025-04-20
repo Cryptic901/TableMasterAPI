@@ -2,7 +2,6 @@ package com.tablemaster_api.entity;
 
 import jakarta.persistence.*;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
