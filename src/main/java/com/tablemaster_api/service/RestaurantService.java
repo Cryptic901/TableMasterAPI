@@ -49,6 +49,7 @@ public class RestaurantService implements IRestaurantService {
         return restaurantDtoMapper.fromEntity(restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found")));
     }
+
     @CacheEvict(value = "restaurants", key = "#restaurant.id")
     public RestaurantDto addRestaurant(Restaurant restaurant) {
         restaurantRepository.save(restaurant);

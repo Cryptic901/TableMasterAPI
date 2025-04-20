@@ -1,7 +1,5 @@
 package com.tablemaster_api.configuration;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
@@ -16,8 +14,6 @@ public class JacksonConfiguration {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.registerModule(new ParameterNamesModule());
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        objectMapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
         return objectMapper;
     }
 }

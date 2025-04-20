@@ -1,4 +1,6 @@
 package com.tablemaster_api.dto;
 
-public record ContactInfoDto(String phone, String email) {
+import java.io.Serializable;
+
+public record ContactInfoDto(String phone, String email) implements Serializable {
 }

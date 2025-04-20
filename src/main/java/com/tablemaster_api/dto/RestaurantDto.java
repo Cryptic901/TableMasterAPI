@@ -4,11 +4,8 @@ import com.tablemaster_api.entity.Reservation;
 import com.tablemaster_api.entity.Tag;
 import com.tablemaster_api.enums.DaysOfWeek;
 
-import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +21,4 @@ public record RestaurantDto(
         List<DaysOfWeek> workDays,
         Set<Tag> tags,
         List<Reservation> reservations
-) {
-
-}
+) implements Serializable {}

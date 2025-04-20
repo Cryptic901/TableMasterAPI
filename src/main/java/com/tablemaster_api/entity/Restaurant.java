@@ -244,17 +244,17 @@ public class Restaurant {
     @Override
     public String toString() {
         return "Restaurant{" +
-                "workTimeClosed=" + workTimeClosed +
-                ", workTimeOpen=" + workTimeOpen +
-                ", countOfReviews=" + countOfReviews +
-                ", rating=" + rating +
-                ", location='" + location + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                ", description='" + description + '\'' +
+                "id=" + id +
                 ", name='" + name + '\'' +
-                ", id=" + id +
+                ", description='" + description + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", location='" + location + '\'' +
+                ", rating=" + rating +
+                ", countOfReviews=" + countOfReviews +
+                ", workTimeOpen=" + workTimeOpen +
+                ", workTimeClosed=" + workTimeClosed +
                 '}';
     }
 }
