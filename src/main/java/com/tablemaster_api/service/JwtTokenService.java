@@ -39,7 +39,7 @@ public class JwtTokenService {
                 .claims(claims)
                 .signWith(generateKey())
                 .issuedAt(new Date())
-                .expiration(Date.from(Instant.now().plusSeconds(expirationTime.toMillis())))
+                .expiration(Date.from(Instant.now().plusSeconds(expirationTime.getSeconds())))
                 .subject(userDetails.getUsername())
                 .compact();
     }

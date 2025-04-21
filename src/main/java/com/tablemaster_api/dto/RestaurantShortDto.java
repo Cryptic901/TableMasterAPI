@@ -12,5 +12,5 @@ public record RestaurantShortDto(
         LocalTime workTimeOpen,
         LocalTime workTimeClosed,
         Double rating
-)implements Serializable {
+) implements Serializable {
 }

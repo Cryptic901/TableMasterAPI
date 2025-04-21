@@ -10,4 +10,4 @@ import java.time.LocalDateTime;
 public record ReviewDto(
     User user,
     BigDecimal rating,
-    LocalDateTime createdAt)implements Serializable {}
+    LocalDateTime createdAt) implements Serializable {}

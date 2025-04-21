@@ -5,6 +5,7 @@ import com.tablemaster_api.abstraction.service.IRestaurantService;
 import com.tablemaster_api.dto.ContactInfoDto;
 import com.tablemaster_api.dto.RestaurantDto;
 import com.tablemaster_api.dto.RestaurantShortDto;
+import com.tablemaster_api.dto.UpdateRestaurantDto;
 import com.tablemaster_api.entity.Restaurant;
 import com.tablemaster_api.mapper.RestaurantDtoMapper;
 import com.tablemaster_api.mapper.RestaurantShortDtoMapper;
@@ -32,7 +33,7 @@ public class RestaurantService implements IRestaurantService {
         this.restaurantShortDtoMapper = restaurantShortDtoMapper;
     }
 
-    @Cacheable(value = "restaurants", key = "#restaurantId")
+    @Cacheable(value = "contactInfo", key = "#restaurantId")
     public ContactInfoDto getContactInfo(long restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
@@ -69,11 +70,13 @@ public class RestaurantService implements IRestaurantService {
     }
 
     @CacheEvict(value = "restaurants", key = "#restaurantId")
-    public RestaurantDto updateRestaurant(long restaurantId, RestaurantDto restaurantDto) {
+    public RestaurantDto updateRestaurant(long restaurantId, UpdateRestaurantDto restaurantDto) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
         restaurantDtoMapper.updateEntityFromDto(restaurantDto, restaurant);
         restaurantRepository.save(restaurant);
+        System.out.println(restaurantDto);
+        System.out.println(restaurant);
         return restaurantDtoMapper.fromEntity(restaurant);
     }
 

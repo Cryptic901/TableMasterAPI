@@ -21,4 +21,5 @@ public record RestaurantDto(
         List<DaysOfWeek> workDays,
         Set<Tag> tags,
         List<Reservation> reservations
-) implements Serializable {}
+) implements Serializable {
+}

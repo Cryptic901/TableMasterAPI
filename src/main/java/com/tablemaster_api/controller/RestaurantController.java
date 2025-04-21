@@ -3,6 +3,7 @@ package com.tablemaster_api.controller;
 import com.tablemaster_api.dto.ContactInfoDto;
 import com.tablemaster_api.dto.RestaurantDto;
 import com.tablemaster_api.dto.RestaurantShortDto;
+import com.tablemaster_api.dto.UpdateRestaurantDto;
 import com.tablemaster_api.entity.Restaurant;
 import com.tablemaster_api.service.RestaurantService;
 import org.springframework.data.domain.Sort;
@@ -15,7 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/restaurants")
 public class RestaurantController {
-
 
     private final RestaurantService restaurantService;
 
@@ -30,14 +30,12 @@ public class RestaurantController {
 
     @GetMapping
     public ResponseEntity<List<RestaurantShortDto>> getAllRestaurants(
-            @RequestParam(required = false, defaultValue = "countOfReviews")String sortBy,
+            @RequestParam(required = false, defaultValue = "countOfReviews") String sortBy,
             @RequestParam(required = false, defaultValue = "desc") String order) {
-        Sort sort = Sort.by(Sort.Order.by(sortBy));
-        if (order.equalsIgnoreCase("desc")) {
-            sort.descending();
-        } else {
-            sort.ascending();
-        }
+        Sort.Order sortOrder = new Sort.Order(order.equalsIgnoreCase("desc") ?
+                Sort.Direction.DESC : Sort.Direction.ASC,
+                sortBy);
+        Sort sort = Sort.by(sortOrder);
         return ResponseEntity.ok(restaurantService.getAllSorted(sort));
     }
 
@@ -58,7 +56,7 @@ public class RestaurantController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<RestaurantDto> updateRestaurant(@PathVariable long id, RestaurantDto restaurantDto) {
+    public ResponseEntity<RestaurantDto> updateRestaurant(@PathVariable long id, @RequestBody UpdateRestaurantDto restaurantDto) {
         return ResponseEntity.ok(restaurantService.updateRestaurant(id, restaurantDto));
     }
 }
